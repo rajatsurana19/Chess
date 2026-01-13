@@ -60,3 +60,19 @@ white_knight_small = pygame.transform.scale(white_knight, (45, 45))
 white_pawn = pygame.image.load('assets/images/white pawn.png')
 white_pawn = pygame.transform.scale(white_pawn, (65, 65))
 white_pawn_small = pygame.transform.scale(white_pawn, (45, 45))
+
+
+run = True
+#main game loop
+while run:
+    timer.tick(fps)
+    screen.fill('dark gray')
+    
+    #event handling
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            run = False
+
+    pygame.display.flip()
+
+pygame.quit()
