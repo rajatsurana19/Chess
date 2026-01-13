@@ -14,6 +14,13 @@ big_font = pygame.font.Font('freesansbold.ttf',50)
 timer = pygame.time.Clock()
 fps = 60
 
+#white pieces and locations
+white_pieces = ['rook', 'knight', 'bishop', 'king', 'queen', 'bishop', 'knight', 'rook',
+                'pawn', 'pawn', 'pawn', 'pawn', 'pawn', 'pawn', 'pawn', 'pawn']
+
+#black_pieces and locations
+black_pieces = ['rook', 'knight', 'bishop', 'king', 'queen', 'bishop', 'knight', 'rook',
+                'pawn', 'pawn', 'pawn', 'pawn', 'pawn', 'pawn', 'pawn', 'pawn']
 
 
 #game images laoding 
