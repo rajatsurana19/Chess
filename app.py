@@ -64,6 +64,8 @@ white_pawn = pygame.image.load('assets/images/white pawn.png')
 white_pawn = pygame.transform.scale(white_pawn, (65, 65))
 white_pawn_small = pygame.transform.scale(white_pawn, (45, 45))
 
+piece_list = ['pawn','queen','king','knight','rook','bishop']
+
 #defined draw board function
 def draw_board():
     for i in range(32):
@@ -81,7 +83,17 @@ def draw_board():
             status_text = ['White: Select a Piece to Move','White: Select a Destination to play',
                             'Black: Select a Piece  to Move', 'Black: Select a Destination to play']
             
-            screen.blit(big_font.render(status_text[turn_step],True,'black'),(200))
+            screen.blit(big_font.render(status_text[turn_step],True,'black'),(20,820))
+
+            for i in range(9):
+                pygame.draw.line(screen,'black',(0,100*i),(800,100*i),2)
+                pygame.draw.line(screen,'black',(100*i,0),(100*i,800),2)
+
+#defined draw pieces function
+def draw_pieces():
+    for i in range(len(white_pieces)):
+        index = piece_list.index(white_pieces[i])
+
 run = True
 #main game loop
 while run:
@@ -90,6 +102,9 @@ while run:
     
     #draw_board
     draw_board()
+
+    #draw_pieces
+    draw_pieces()
 
     #event handling
     for event in pygame.event.get():
