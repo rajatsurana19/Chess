@@ -50,15 +50,7 @@ Check Python version:
 python --version
 
 ---
-### 📁 Project Structure
 
-Chess/
-├── assets/
-│   └── images/          # Chess piece and board images
-├── app.py               # Main game logic and loop
-├── README.md            # Project documentation
-
----
 ### Installation
 
 # 1. Clone the repository
