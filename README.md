@@ -49,7 +49,8 @@ Check Python version:
 
 python --version
 
-###📁 Project Structure
+---
+### 📁 Project Structure
 
 Chess/
 ├── assets/
@@ -57,7 +58,8 @@ Chess/
 ├── app.py               # Main game logic and loop
 ├── README.md            # Project documentation
 
-###Installation
+---
+### Installation
 
 # 1. Clone the repository
 git clone https://github.com/rajatsurana19/Chess.git
