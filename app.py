@@ -21,10 +21,13 @@ valid_moves = []
 #white pieces and locations
 white_pieces = ['rook', 'knight', 'bishop', 'king', 'queen', 'bishop', 'knight', 'rook',
                 'pawn', 'pawn', 'pawn', 'pawn', 'pawn', 'pawn', 'pawn', 'pawn']
-
+white_locations = [(0,0),(1,0),(2,0),(3,0),(4,0),(5,0),(6,0),(7,0),
+                   (0,1),(1,1),(2,1),(3,1),(4,1),(5,1),(6,1),(7,1)]
 #black_pieces and locations
 black_pieces = ['rook', 'knight', 'bishop', 'king', 'queen', 'bishop', 'knight', 'rook',
                 'pawn', 'pawn', 'pawn', 'pawn', 'pawn', 'pawn', 'pawn', 'pawn']
+black_locations = [(0, 7), (1, 7), (2, 7), (3, 7), (4, 7), (5, 7), (6, 7), (7, 7),
+                   (0, 6), (1, 6), (2, 6), (3, 6), (4, 6), (5, 6), (6, 6), (7, 6)]
 
 #game images laoding 
 black_queen = pygame.image.load('assets/images/black queen.png')
@@ -64,6 +67,14 @@ white_pawn = pygame.image.load('assets/images/white pawn.png')
 white_pawn = pygame.transform.scale(white_pawn, (65, 65))
 white_pawn_small = pygame.transform.scale(white_pawn, (45, 45))
 
+white_images = [white_pawn, white_queen, white_king, white_knight, white_rook, white_bishop]
+small_white_images = [white_pawn_small, white_queen_small, white_king_small, white_knight_small,
+                      white_rook_small, white_bishop_small]
+
+black_images = [black_pawn, black_queen, black_king, black_knight, black_rook, black_bishop]
+small_black_images = [black_pawn_small, black_queen_small, black_king_small, black_knight_small,
+                      black_rook_small, black_bishop_small]
+
 piece_list = ['pawn','queen','king','knight','rook','bishop']
 
 #defined draw board function
@@ -93,6 +104,10 @@ def draw_board():
 def draw_pieces():
     for i in range(len(white_pieces)):
         index = piece_list.index(white_pieces[i])
+        if white_pieces[i] == 'pawn':
+            screen.blit(white_pawn,(white_locations[i][0] * 100 + 22 , white_locations[i][1] * 100 + 30))
+        else:
+            screen.blit(white_images,(white_locations[i][0] * 100 + 22 , white_locations[i][1] * 100 + 30))
 
 run = True
 #main game loop
