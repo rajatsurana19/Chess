@@ -77,6 +77,7 @@ small_black_images = [black_pawn_small, black_queen_small, black_king_small, bla
 
 piece_list = ['pawn','queen','king','knight','rook','bishop']
 
+
 #defined draw board function
 def draw_board():
     for i in range(32):
@@ -109,7 +110,7 @@ def draw_pieces():
         else:
             screen.blit(white_images[index],(white_locations[i][0] * 100 + 10 , white_locations[i][1] * 100 + 10))
         if turn_step < 2 :
-            if selection == 1:
+            if selection == i:
                 pygame.draw.rect(screen,'red',[white_locations[i][0] * 100 + 1,white_locations[i][1] * 100 + 1, 100 ,100],2)
         
     for i in range(len(black_pieces)):
