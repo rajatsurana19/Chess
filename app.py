@@ -159,6 +159,8 @@ while run:
                     if click_coord in black_locations:
                         black_piece = black_locations.index(click_coord)
                         captured_piece_white.append(black_pieces[black_piece])
+                        black_pieces.pop(black_piece)
+                        black_locations.pop(black_piece)
 
 
 
