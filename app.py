@@ -125,6 +125,9 @@ def draw_pieces():
                 pygame.draw.rect(screen, 'blue', [black_locations[i][0] * 100 + 1, black_locations[i][1] * 100 + 1,
                                                   100, 100], 2)
 
+#defined check options
+def check_options():
+    pass
 
 run = True
 #main game loop
@@ -161,6 +164,9 @@ while run:
                         captured_piece_white.append(black_pieces[black_piece])
                         black_pieces.pop(black_piece)
                         black_locations.pop(black_piece)
+
+                    black_options = check_options()
+                    white_options = check_options()
 
 
 
