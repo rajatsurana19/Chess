@@ -18,6 +18,7 @@ captured_piece_black = []
 turn_step = 0
 selection = 100
 valid_moves = []
+
 #white pieces and locations
 white_pieces = ['rook', 'knight', 'bishop', 'king', 'queen', 'bishop', 'knight', 'rook',
                 'pawn', 'pawn', 'pawn', 'pawn', 'pawn', 'pawn', 'pawn', 'pawn']
@@ -141,5 +142,25 @@ while run:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             run = False
+
+        if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+            x_coord = event.pos[0] // 100
+            y_coord = event.pos[1] // 100
+            click_coord = (x_coord,y_coord)
+
+            if turn_step <= 1:
+                if click_coord in white_locations:
+                    selection = white_locations.index(click_coord)
+                    if turn_step == 0:
+                        turn_step = 1
+
+                if click_coord in valid_moves and selection != 100:
+                    white_locations[selection] = click_coord
+                    if click_coord in black_locations:
+                        black_piece = black_locations.index(click_coord)
+                        captured_piece_white.append(black_pieces[black_piece])
+
+
+
     pygame.display.flip()
 pygame.quit()
