@@ -96,7 +96,7 @@ def draw_board():
             status_text = ['White: Select a Piece to Move','White: Select a Destination to play',
                             'Black: Select a Piece  to Move', 'Black: Select a Destination to play']
             
-            screen.blit(big_font.render(status_text[turn_step],True,'black'),(20,820))
+            screen.blit(medium_font.render(status_text[turn_step],True,'black'),(20,820))
 
             for i in range(9):
                 pygame.draw.line(screen,'black',(0,100*i),(800,100*i),2)
@@ -112,7 +112,7 @@ def draw_pieces():
             screen.blit(white_images[index],(white_locations[i][0] * 100 + 10 , white_locations[i][1] * 100 + 10))
         if turn_step < 2 :
             if selection == i:
-                pygame.draw.rect(screen,'red',[white_locations[i][0] * 100 + 1,white_locations[i][1] * 100 + 1, 100 ,100],2)
+                pygame.draw.rect(screen,'green',[white_locations[i][0] * 100 + 1,white_locations[i][1] * 100 + 1, 100 ,100],2)
         
     for i in range(len(black_pieces)):
         index = piece_list.index(black_pieces[i])
@@ -165,10 +165,32 @@ while run:
                         black_pieces.pop(black_piece)
                         black_locations.pop(black_piece)
 
-                    black_options = check_options()
-                    white_options = check_options()
+                    black_options = check_options(black_pieces,black_locations,'black')
+                    white_options = check_options(white_pieces,white_locations,'white')
+                    turn_step = 2
+                    selection = 100
+                    valid_moves = []
 
 
+            if turn_step > 1:
+                if click_coord in black_locations:
+                    selection = black_locations.index(click_coord)
+                    if turn_step == 2:
+                        turn_step = 3
+
+                if click_coord in valid_moves and selection != 100:
+                    black_locations[selection] = click_coord
+                    if click_coord in white_locations:
+                        white_piece = white_locations.index(click_coord)
+                        captured_piece_black.append(white_pieces[white_piece])
+                        white_pieces.pop(white_piece)
+                        white_locations.pop(white_piece)
+
+                    black_options = check_options(black_pieces,black_locations,'black')
+                    white_options = check_options(white_pieces,white_locations,'white')
+                    turn_step = 2
+                    selection = 100
+                    valid_moves = []
 
     pygame.display.flip()
 pygame.quit()
