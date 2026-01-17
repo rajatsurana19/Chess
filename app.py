@@ -125,11 +125,59 @@ def draw_pieces():
                 pygame.draw.rect(screen, 'blue', [black_locations[i][0] * 100 + 1, black_locations[i][1] * 100 + 1,
                                                   100, 100], 2)
 
-#defined check options
-def check_options():
+#defined check_pawn function
+def check_pawn(location):
     pass
 
+#defined check_rook function
+def check_rook(location):
+    pass
+
+#defined check_bishop function
+def check_bishop(location):
+    pass
+
+#defined check_knight function
+def check_knight(location):
+    pass
+
+#def check_queen function
+def check_queen(location):
+    pass
+
+#defined check_king function
+def check_king(location):
+    pass
+
+#defined check options
+def check_options(pieces,locations,turn):
+    moves_list = []
+    all_moves_list = []
+
+    for i in range(len(pieces)):
+        location = locations[i]
+        piece = pieces[i]
+        if piece == 'pawn':
+            moves_list = check_pawn(location)
+        elif piece == 'rook':
+            moves_list = check_rook(location)
+        elif piece == 'knight':
+            moves_list = check_knight(location)
+        elif piece == 'bishop':
+            moves_list = check_bishop(location)
+        elif piece == 'queen':
+            moves_list = check_queen(location)
+        elif piece == 'king':
+            moves_list = check_king(location)
+        all_moves_list.append(moves_list)
+    return all_moves_list
+
+
 run = True
+
+black_options = check_options(black_pieces,black_locations,'black')
+white_options = check_options(white_pieces,white_locations,'white')
+
 #main game loop
 while run:
     timer.tick(fps)
