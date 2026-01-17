@@ -140,7 +140,7 @@ def check_pawn(position,color):
 
     else:
         if(position[0],position[1]-1) not in white_locations and (position[0],position[1]-1) not in black_locations and position[1]> 0:
-            moves_list.append(position[0,position[1]-1])
+            moves_list.append(position[0],position[1]-1)
         elif(position[0],position[1]-2) not in white_locations and (position[0],position[1]-2) not in black_locations and position[1] == 6:
             moves_list.append(position[0,position[1]-2])
         elif (position[0]+1,position[1]-1) in white_locations:
@@ -152,23 +152,23 @@ def check_pawn(position,color):
 
 
 #defined check_rook function
-def check_rook(position):
+def check_rook(position,color):
     pass
 
 #defined check_bishop function
-def check_bishop(position):
+def check_bishop(position,color):
     pass
 
 #defined check_knight function
-def check_knight(position):
+def check_knight(position,color):
     pass
 
 #def check_queen function
-def check_queen(position):
+def check_queen(position,color):
     pass
 
 #defined check_king function
-def check_king(position):
+def check_king(position,color):
     pass
 
 #defined check options
@@ -180,25 +180,38 @@ def check_options(pieces,locations,turn):
         location = locations[i]
         piece = pieces[i]
         if piece == 'pawn':
-            moves_list = check_pawn(location)
+            moves_list = check_pawn(location,turn)
         elif piece == 'rook':
-            moves_list = check_rook(location)
+            moves_list = check_rook(location,turn)
         elif piece == 'knight':
-            moves_list = check_knight(location)
+            moves_list = check_knight(location,turn)
         elif piece == 'bishop':
-            moves_list = check_bishop(location)
+            moves_list = check_bishop(location,turn)
         elif piece == 'queen':
-            moves_list = check_queen(location)
+            moves_list = check_queen(location,turn)
         elif piece == 'king':
-            moves_list = check_king(location)
+            moves_list = check_king(location,turn)
         all_moves_list.append(moves_list)
     return all_moves_list
 
+# defined draw _valid move function
+def draw_valid():
+    pass
+
+# defined check valid move function
+def check_valid_moves():
+    if turn_step <= 1 :
+        options_list = white_options
+    else:
+        options_list = black_options
+
+    valid_options = options_list[selection]
+    return valid_options
 
 run = True
 
-black_options = check_options(black_pieces,black_locations,'black')
-white_options = check_options(white_pieces,white_locations,'white')
+# black_options = check_options(black_pieces,black_locations,'black')
+# white_options = check_options(white_pieces,white_locations,'white')
 
 #main game loop
 while run:
@@ -210,6 +223,11 @@ while run:
 
     #draw_pieces
     draw_pieces()
+
+    # check valid moves
+    if selection != 100:
+        valid_moves = check_valid_moves()
+        draw_valid(valid_moves)
 
     #event handling
     for event in pygame.event.get():
