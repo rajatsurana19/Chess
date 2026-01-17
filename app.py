@@ -126,27 +126,49 @@ def draw_pieces():
                                                   100, 100], 2)
 
 #defined check_pawn function
-def check_pawn(location):
-    pass
+def check_pawn(position,color):
+    moves_list = []
+    if color == 'white':
+        if(position[0],position[1]+1) not in white_locations and (position[0],position[1]+1) not in black_locations and position[1]<7:
+            moves_list.append(position[0,position[1]+1])
+        elif(position[0],position[1]+2) not in white_locations and (position[0],position[1]+2) not in black_locations and position[1] == 1:
+            moves_list.append(position[0,position[1]+2])
+        elif (position[0]+ 1,position[1]+ 1) in black_locations:
+            moves_list.append(position[0]+1,position[1]+1)
+        elif (position[0]-1,position[1]+1) in black_locations:
+            moves_list.append(position[0]-1,position[1]+1)
+
+    else:
+        if(position[0],position[1]-1) not in white_locations and (position[0],position[1]-1) not in black_locations and position[1]> 0:
+            moves_list.append(position[0,position[1]-1])
+        elif(position[0],position[1]-2) not in white_locations and (position[0],position[1]-2) not in black_locations and position[1] == 6:
+            moves_list.append(position[0,position[1]-2])
+        elif (position[0]+1,position[1]-1) in white_locations:
+            moves_list.append(position[0]+1,position[1]-1)
+        elif (position[0]-1,position[1]-1) in white_locations:
+            moves_list.append(position[0]-1,position[1]-1)
+
+    return moves_list
+
 
 #defined check_rook function
-def check_rook(location):
+def check_rook(position):
     pass
 
 #defined check_bishop function
-def check_bishop(location):
+def check_bishop(position):
     pass
 
 #defined check_knight function
-def check_knight(location):
+def check_knight(position):
     pass
 
 #def check_queen function
-def check_queen(location):
+def check_queen(position):
     pass
 
 #defined check_king function
-def check_king(location):
+def check_king(position):
     pass
 
 #defined check options
