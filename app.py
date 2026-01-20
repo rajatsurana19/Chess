@@ -155,7 +155,6 @@ def check_pawn(position, color):
 
     return moves_list
 
-
 #defined check_rook function
 def check_rook(position,color):
     moves_list = []
@@ -302,7 +301,6 @@ def draw_valid(moves):
         color = 'blue'
     for i in range(len(moves)):
         pygame.draw.circle(screen, color, (moves[i][0] * 100 + 50, moves[i][1] * 100 + 50), 5)
-
 
 # defined check valid move function
 def check_valid_moves():
