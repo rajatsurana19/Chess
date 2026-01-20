@@ -248,7 +248,12 @@ def check_knight(position,color):
 
 #def check_queen function
 def check_queen(position,color):
-    pass
+    moves_list = check_bishop(position, color)
+    second_list = check_rook(position, color)
+    for i in range(len(second_list)):
+        moves_list.append(second_list[i])
+
+    return moves_list
 
 #defined check_king function
 def check_king(position,color):
