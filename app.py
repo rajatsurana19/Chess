@@ -135,33 +135,41 @@ def draw_pieces():
 
 #defined check_pawn function
 def check_pawn(position, color):
+    global en_passant_target
     moves_list = []
 
     if color == 'white':
-        if (position[0], position[1] + 1) not in white_locations and \
-                (position[0], position[1] + 1) not in black_locations and position[1] < 7:
-            moves_list.append((position[0], position[1] + 1))
-        if (position[0], position[1] + 2) not in white_locations and \
-                (position[0], position[1] + 2) not in black_locations and position[1] == 1:
-            moves_list.append((position[0], position[1] + 2))
-        if (position[0] + 1, position[1] + 1) in black_locations:
-            moves_list.append((position[0] + 1, position[1] + 1))
-        if (position[0] - 1, position[1] + 1) in black_locations:
-            moves_list.append((position[0] - 1, position[1] + 1))
-
+        direction = 1
+        start_row = 1
+        enemy = black_locations
+        friend = white_locations
     else:
-        if (position[0], position[1] - 1) not in white_locations and \
-                (position[0], position[1] - 1) not in black_locations and position[1] > 0:
-            moves_list.append((position[0], position[1] - 1))
-        if (position[0], position[1] - 2) not in white_locations and \
-                (position[0], position[1] - 2) not in black_locations and position[1] == 6:
-            moves_list.append((position[0], position[1] - 2))
-        if (position[0] + 1, position[1] - 1) in white_locations:
-            moves_list.append((position[0] + 1, position[1] - 1))
-        if (position[0] - 1, position[1] - 1) in white_locations:
-            moves_list.append((position[0] - 1, position[1] - 1))
+        direction = -1
+        start_row = 6
+        enemy = white_locations
+        friend = black_locations
+
+    # forward move
+    if (position[0], position[1] + direction) not in enemy + friend:
+        moves_list.append((position[0], position[1] + direction))
+
+        # double move
+        if position[1] == start_row and (position[0], position[1] + 2*direction) not in enemy + friend:
+            moves_list.append((position[0], position[1] + 2*direction))
+
+    # captures
+    for dx in [-1, 1]:
+        target = (position[0] + dx, position[1] + direction)
+        if target in enemy:
+            moves_list.append(target)
+
+    # en passant
+    if en_passant_target:
+        if abs(en_passant_target[0] - position[0]) == 1 and en_passant_target[1] == position[1] + direction:
+            moves_list.append(en_passant_target)
 
     return moves_list
+
 
 #defined check_rook function
 def check_rook(position,color):
