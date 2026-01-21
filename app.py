@@ -317,22 +317,26 @@ def draw_valid(moves):
 
 def check_valid_moves():
     if turn_step <= 1:
-        pieces = white_pieces[:]
-        locations = white_locations[:]
         color = 'white'
         options_list = white_options
     else:
-        pieces = black_pieces[:]
-        locations = black_locations[:]
         color = 'black'
         options_list = black_options
 
     legal_moves = []
-    piece = pieces[selection]
-    original_pos = locations[selection]
+    
+    if color == 'white':
+        piece = white_pieces[selection]
+        original_pos = white_locations[selection]
+    else:
+        piece = black_pieces[selection]
+        original_pos = black_locations[selection]
 
     for move in options_list[selection]:
-        locations[selection] = move
+        if color == 'white':
+            white_locations[selection] = move
+        else:
+            black_locations[selection] = move
         
         captured_piece = None
         captured_index = None
@@ -361,12 +365,10 @@ def check_valid_moves():
                 white_pieces.insert(captured_index, captured_piece)
                 white_locations.insert(captured_index, move)
 
-        locations[selection] = original_pos
-
-    if color == 'white':
-        white_locations[selection] = original_pos
-    else:
-        black_locations[selection] = original_pos
+        if color == 'white':
+            white_locations[selection] = original_pos
+        else:
+            black_locations[selection] = original_pos
 
     if piece == 'king':
         if color == 'white':
