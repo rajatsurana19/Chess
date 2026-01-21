@@ -19,6 +19,14 @@ turn_step = 0
 selection = 100
 valid_moves = []
 
+white_moved = {'king': False, 'rook_left': False, 'rook_right': False}
+black_moved = {'king': False, 'rook_left': False, 'rook_right': False}
+
+en_passant_target = None
+game_over = False
+winner = None
+
+
 #white pieces and locations
 white_pieces = ['rook', 'knight', 'bishop', 'king', 'queen', 'bishop', 'knight', 'rook',
                 'pawn', 'pawn', 'pawn', 'pawn', 'pawn', 'pawn', 'pawn', 'pawn']
