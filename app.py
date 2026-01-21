@@ -328,6 +328,30 @@ def check_valid_moves():
     valid_options = options_list[selection]
     return valid_options
 
+#defined checkmate 
+def is_checkmate(color):
+    if not is_in_check(color):
+        return False
+
+    if color == 'white':
+        pieces, locations = white_pieces, white_locations
+    else:
+        pieces, locations = black_pieces, black_locations
+
+    for i in range(len(pieces)):
+        original = locations[i]
+        moves = check_options(pieces, locations, color)[i]
+
+        for move in moves:
+            locations[i] = move
+            if not is_in_check(color):
+                locations[i] = original
+                return False
+            locations[i] = original
+
+    return True
+
+
 
 #defined get_king function moves
 def get_king_position(color):
