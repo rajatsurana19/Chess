@@ -296,14 +296,17 @@ def check_king(position, color):
     if not moved['king']:
         # kingside
         if not moved['rook_right']:
-            if all((x, row) not in friends+enemies for x in [5,6]):
-                moves_list.append((6, row))
+           if all((x, row) not in friends+enemies for x in [5,6]):
+                if not is_in_check(color):
+                    moves_list.append((6, row))
+
 
         # queenside
         if not moved['rook_left']:
             if all((x, row) not in friends+enemies for x in [1,2,3]):
-                moves_list.append((2, row))
-
+                if not is_in_check(color):
+                    moves_list.append((2, row))
+                    
     return moves_list
 
 
