@@ -271,21 +271,41 @@ def check_queen(position,color):
     return moves_list
 
 #defined check_king function
-def check_king(position,color):
+def check_king(position, color):
     moves_list = []
+
     if color == 'white':
-        enemies_list = black_locations
-        friends_list = white_locations
+        friends = white_locations
+        enemies = black_locations
+        moved = white_moved
+        row = 0
     else:
-        friends_list = black_locations
-        enemies_list = white_locations
-    # 8 squares to check for kings, they can go one square any direction
-    targets = [(1, 0), (1, 1), (1, -1), (-1, 0), (-1, 1), (-1, -1), (0, 1), (0, -1)]
-    for i in range(8):
-        target = (position[0] + targets[i][0], position[1] + targets[i][1])
-        if target not in friends_list and 0 <= target[0] <= 7 and 0 <= target[1] <= 7:
+        friends = black_locations
+        enemies = white_locations
+        moved = black_moved
+        row = 7
+
+    # normal king moves
+    targets = [(1,0),(1,1),(1,-1),(-1,0),(-1,1),(-1,-1),(0,1),(0,-1)]
+    for dx, dy in targets:
+        target = (position[0]+dx, position[1]+dy)
+        if 0 <= target[0] <= 7 and 0 <= target[1] <= 7 and target not in friends:
             moves_list.append(target)
+
+    # castling
+    if not moved['king']:
+        # kingside
+        if not moved['rook_right']:
+            if all((x, row) not in friends+enemies for x in [5,6]):
+                moves_list.append((6, row))
+
+        # queenside
+        if not moved['rook_left']:
+            if all((x, row) not in friends+enemies for x in [1,2,3]):
+                moves_list.append((2, row))
+
     return moves_list
+
 
 #defined check options
 def check_options(pieces, locations, turn):
@@ -350,7 +370,6 @@ def is_checkmate(color):
             locations[i] = original
 
     return True
-
 
 
 #defined get_king function moves
