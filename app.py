@@ -313,6 +313,10 @@ def check_valid_moves():
     return valid_options
 
 
+#defined draw_captured function
+def draw_captured():
+    pass
+
 run = True
 
 black_options = check_options(black_pieces,black_locations,'black')
@@ -328,6 +332,9 @@ while run:
 
     #draw_pieces
     draw_pieces()
+
+    #draw_captured
+    draw_captured()
 
     # check valid moves
     if selection != 100:
