@@ -131,7 +131,6 @@ def draw_pieces():
 
 
 def check_pawn(position, color):
-    global en_passant_target
     moves_list = []
 
     if color == 'white':
@@ -145,7 +144,7 @@ def check_pawn(position, color):
         enemy = white_locations
         friend = black_locations
 
-    if (position[0], position[1] + direction) not in enemy + friend:
+    if (position[0], position[1] + direction) not in enemy + friend and 0 <= position[1] + direction <= 7:
         moves_list.append((position[0], position[1] + direction))
 
         if position[1] == start_row and (position[0], position[1] + 2*direction) not in enemy + friend:
@@ -153,7 +152,7 @@ def check_pawn(position, color):
 
     for dx in [-1, 1]:
         target = (position[0] + dx, position[1] + direction)
-        if target in enemy:
+        if 0 <= target[0] <= 7 and 0 <= target[1] <= 7 and target in enemy:
             moves_list.append(target)
 
     if en_passant_target:
@@ -266,21 +265,15 @@ def check_king(position, color):
 
     if color == 'white':
         friends = white_locations
-        enemies = black_locations
-        moved = white_moved
-        row = 0
     else:
         friends = black_locations
-        enemies = white_locations
-        moved = black_moved
-        row = 7
 
     targets = [(1,0),(1,1),(1,-1),(-1,0),(-1,1),(-1,-1),(0,1),(0,-1)]
     for dx, dy in targets:
         target = (position[0]+dx, position[1]+dy)
         if 0 <= target[0] <= 7 and 0 <= target[1] <= 7 and target not in friends:
             moves_list.append(target)
-
+                    
     return moves_list
 
 
@@ -315,28 +308,59 @@ def draw_valid(moves):
         pygame.draw.circle(screen, color, (moves[i][0] * 100 + 50, moves[i][1] * 100 + 50), 5)
 
 
+def get_king_position(color):
+    if color == 'white':
+        king_index = white_pieces.index('king')
+        return white_locations[king_index]
+    else:
+        king_index = black_pieces.index('king')
+        return black_locations[king_index]
+
+
+def is_in_check(color):
+    king_pos = get_king_position(color)
+
+    if color == 'white':
+        enemy_moves = check_options(black_pieces, black_locations, 'black')
+    else:
+        enemy_moves = check_options(white_pieces, white_locations, 'white')
+
+    for moves in enemy_moves:
+        if king_pos in moves:
+            return True
+    return False
+
+
+def is_square_attacked(square, by_color):
+    if by_color == 'white':
+        enemy_moves = check_options(white_pieces, white_locations, 'white')
+    else:
+        enemy_moves = check_options(black_pieces, black_locations, 'black')
+
+    for moves in enemy_moves:
+        if square in moves:
+            return True
+    return False
+
+
 def check_valid_moves():
     if turn_step <= 1:
         color = 'white'
         options_list = white_options
+        pieces = white_pieces
+        locations = white_locations
     else:
         color = 'black'
         options_list = black_options
+        pieces = black_pieces
+        locations = black_locations
 
     legal_moves = []
-    
-    if color == 'white':
-        piece = white_pieces[selection]
-        original_pos = white_locations[selection]
-    else:
-        piece = black_pieces[selection]
-        original_pos = black_locations[selection]
+    piece = pieces[selection]
+    original_pos = locations[selection]
 
     for move in options_list[selection]:
-        if color == 'white':
-            white_locations[selection] = move
-        else:
-            black_locations[selection] = move
+        locations[selection] = move
         
         captured_piece = None
         captured_index = None
@@ -365,10 +389,7 @@ def check_valid_moves():
                 white_pieces.insert(captured_index, captured_piece)
                 white_locations.insert(captured_index, move)
 
-        if color == 'white':
-            white_locations[selection] = original_pos
-        else:
-            black_locations[selection] = original_pos
+        locations[selection] = original_pos
 
     if piece == 'king':
         if color == 'white':
@@ -392,62 +413,6 @@ def check_valid_moves():
                             legal_moves.append((2, row))
 
     return legal_moves
-
-
-def is_checkmate(color):
-    if not is_in_check(color):
-        return False
-
-    if color == 'white':
-        pieces, locations = white_pieces, white_locations
-    else:
-        pieces, locations = black_pieces, black_locations
-
-    for i in range(len(pieces)):
-        original = locations[i]
-        moves = check_options(pieces, locations, color)[i]
-
-        for move in moves:
-            locations[i] = move
-            if not is_in_check(color):
-                locations[i] = original
-                return False
-            locations[i] = original
-
-    return True
-
-
-def get_king_position(color):
-    if color == 'white':
-        return white_locations[white_pieces.index('king')]
-    else:
-        return black_locations[black_pieces.index('king')]
-
-
-def is_in_check(color):
-    king_pos = get_king_position(color)
-
-    if color == 'white':
-        enemy_moves = check_options(black_pieces, black_locations, 'black')
-    else:
-        enemy_moves = check_options(white_pieces, white_locations, 'white')
-
-    for moves in enemy_moves:
-        if king_pos in moves:
-            return True
-    return False
-
-
-def is_square_attacked(square, by_color):
-    if by_color == 'white':
-        enemy_moves = check_options(white_pieces, white_locations, 'white')
-    else:
-        enemy_moves = check_options(black_pieces, black_locations, 'black')
-
-    for moves in enemy_moves:
-        if square in moves:
-            return True
-    return False
 
 
 def draw_captured():
@@ -529,9 +494,9 @@ while run:
                         captured_piece_white.append(black_pieces[black_piece])
                         black_pieces.pop(black_piece)
                         black_locations.pop(black_piece)
-                    elif piece == 'pawn' and click_coord == (new_x, old_y + 1) and click_coord not in black_locations:
-                        captured_pos = (click_coord[0], click_coord[1] - 1)
-                        if captured_pos in black_locations:
+                    elif piece == 'pawn' and old_y == 4 and new_y == 5:
+                        captured_pos = (new_x, 4)
+                        if captured_pos in black_locations and black_pieces[black_locations.index(captured_pos)] == 'pawn':
                             black_piece = black_locations.index(captured_pos)
                             captured_piece_white.append(black_pieces[black_piece])
                             black_pieces.pop(black_piece)
@@ -586,9 +551,9 @@ while run:
                         captured_piece_black.append(white_pieces[white_piece])
                         white_pieces.pop(white_piece)
                         white_locations.pop(white_piece)
-                    elif piece == 'pawn' and click_coord == (new_x, old_y - 1) and click_coord not in white_locations:
-                        captured_pos = (click_coord[0], click_coord[1] + 1)
-                        if captured_pos in white_locations:
+                    elif piece == 'pawn' and old_y == 3 and new_y == 2:
+                        captured_pos = (new_x, 3)
+                        if captured_pos in white_locations and white_pieces[white_locations.index(captured_pos)] == 'pawn':
                             white_piece = white_locations.index(captured_pos)
                             captured_piece_black.append(white_pieces[white_piece])
                             white_pieces.pop(white_piece)
