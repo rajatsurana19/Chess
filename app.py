@@ -265,14 +265,29 @@ def check_king(position, color):
 
     if color == 'white':
         friends = white_locations
+        enemies = black_locations
+        moved = white_moved
+        row = 0
     else:
         friends = black_locations
+        enemies = white_locations
+        moved = black_moved
+        row = 7
 
     targets = [(1,0),(1,1),(1,-1),(-1,0),(-1,1),(-1,-1),(0,1),(0,-1)]
     for dx, dy in targets:
         target = (position[0]+dx, position[1]+dy)
         if 0 <= target[0] <= 7 and 0 <= target[1] <= 7 and target not in friends:
             moves_list.append(target)
+
+    if not moved['king']:
+        if not moved['rook_right']:
+            if all((x, row) not in friends + enemies for x in [5, 6]):
+                moves_list.append((6, row))
+
+        if not moved['rook_left']:
+            if all((x, row) not in friends + enemies for x in [1, 2, 3]):
+                moves_list.append((2, row))
                     
     return moves_list
 
@@ -378,8 +393,7 @@ def check_valid_moves():
                 white_pieces.pop(captured_index)
                 white_locations.pop(captured_index)
 
-        if not is_in_check(color):
-            legal_moves.append(move)
+        in_check = is_in_check(color)
 
         if captured_piece:
             if color == 'white':
@@ -391,26 +405,21 @@ def check_valid_moves():
 
         locations[selection] = original_pos
 
-    if piece == 'king':
-        if color == 'white':
-            row = 0
-            moved = white_moved
-        else:
-            row = 7
-            moved = black_moved
-
-        if not moved['king'] and not is_in_check(color):
-            if not moved['rook_right']:
-                if all((x, row) not in white_locations + black_locations for x in [5, 6]):
+        if not in_check:
+            if piece == 'king' and abs(move[0] - original_pos[0]) == 2:
+                if color == 'white':
+                    row = 0
+                else:
+                    row = 7
+                
+                if move[0] == 6:
                     if not is_square_attacked((5, row), 'black' if color == 'white' else 'white'):
-                        if not is_square_attacked((6, row), 'black' if color == 'white' else 'white'):
-                            legal_moves.append((6, row))
-
-            if not moved['rook_left']:
-                if all((x, row) not in white_locations + black_locations for x in [1, 2, 3]):
-                    if not is_square_attacked((2, row), 'black' if color == 'white' else 'white'):
-                        if not is_square_attacked((3, row), 'black' if color == 'white' else 'white'):
-                            legal_moves.append((2, row))
+                        legal_moves.append(move)
+                elif move[0] == 2:
+                    if not is_square_attacked((3, row), 'black' if color == 'white' else 'white'):
+                        legal_moves.append(move)
+            else:
+                legal_moves.append(move)
 
     return legal_moves
 
