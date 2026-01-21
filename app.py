@@ -329,6 +329,29 @@ def check_valid_moves():
     return valid_options
 
 
+#defined get_king function moves
+def get_king_position(color):
+    if color == 'white':
+        return white_locations[white_pieces.index('king')]
+    else:
+        return black_locations[black_pieces.index('king')]
+
+#defined is check position
+def is_in_check(color):
+    king_pos = get_king_position(color)
+
+    if color == 'white':
+        enemy_moves = check_options(black_pieces, black_locations, 'black')
+    else:
+        enemy_moves = check_options(white_pieces, white_locations, 'white')
+
+    for moves in enemy_moves:
+        if king_pos in moves:
+            return True
+    return False
+
+
+
 #defined draw_captured function
 def draw_captured():
     for i in range(len(captured_piece_white)):
