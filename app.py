@@ -315,8 +315,14 @@ def check_valid_moves():
 
 #defined draw_captured function
 def draw_captured():
-    pass
-
+    for i in range(len(captured_piece_white)):
+        captured_piece = captured_piece_white[i]
+        index = piece_list.index(captured_piece)
+        screen.blit(small_black_images[index], (825, 5 + 50 * i))
+    for i in range(len(captured_piece_black)):
+        captured_piece = captured_piece_black[i]
+        index = piece_list.index(captured_piece)
+        screen.blit(small_white_images[index], (925, 5 + 50 * i))
 run = True
 
 black_options = check_options(black_pieces,black_locations,'black')
