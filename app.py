@@ -281,15 +281,6 @@ def check_king(position, color):
         if 0 <= target[0] <= 7 and 0 <= target[1] <= 7 and target not in friends:
             moves_list.append(target)
 
-    if not moved['king']:
-        if not moved['rook_right']:
-            if all((x, row) not in friends+enemies for x in [5,6]):
-                moves_list.append((6, row))
-
-        if not moved['rook_left']:
-            if all((x, row) not in friends+enemies for x in [1,2,3]):
-                moves_list.append((2, row))
-                    
     return moves_list
 
 
@@ -376,6 +367,27 @@ def check_valid_moves():
         white_locations[selection] = original_pos
     else:
         black_locations[selection] = original_pos
+
+    if piece == 'king':
+        if color == 'white':
+            row = 0
+            moved = white_moved
+        else:
+            row = 7
+            moved = black_moved
+
+        if not moved['king'] and not is_in_check(color):
+            if not moved['rook_right']:
+                if all((x, row) not in white_locations + black_locations for x in [5, 6]):
+                    if not is_square_attacked((5, row), 'black' if color == 'white' else 'white'):
+                        if not is_square_attacked((6, row), 'black' if color == 'white' else 'white'):
+                            legal_moves.append((6, row))
+
+            if not moved['rook_left']:
+                if all((x, row) not in white_locations + black_locations for x in [1, 2, 3]):
+                    if not is_square_attacked((2, row), 'black' if color == 'white' else 'white'):
+                        if not is_square_attacked((3, row), 'black' if color == 'white' else 'white'):
+                            legal_moves.append((2, row))
 
     return legal_moves
 
