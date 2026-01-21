@@ -340,13 +340,31 @@ def draw_valid(moves):
 
 # defined check valid move function
 def check_valid_moves():
-    if turn_step <= 1 :
+    if turn_step <= 1:
+        pieces = white_pieces
+        locations = white_locations
+        color = 'white'
         options_list = white_options
     else:
+        pieces = black_pieces
+        locations = black_locations
+        color = 'black'
         options_list = black_options
 
-    valid_options = options_list[selection]
-    return valid_options
+    legal_moves = []
+    piece = pieces[selection]
+    original_pos = locations[selection]
+
+    for move in options_list[selection]:
+        locations[selection] = move
+
+        if not is_in_check(color):
+            legal_moves.append(move)
+
+        locations[selection] = original_pos
+
+    return legal_moves
+
 
 #defined checkmate 
 def is_checkmate(color):
@@ -435,9 +453,18 @@ while run:
 
             if turn_step <= 1:
                 if click_coord in white_locations:
-                    selection = white_locations.index(click_coord)
-                    if turn_step == 0:
-                        turn_step = 1
+                    white_piece = white_locations.index(click_coord)
+                    captured_piece_black.append(white_pieces[white_piece])
+                    white_pieces.pop(white_piece)
+                    white_locations.pop(white_piece)
+
+                elif piece == 'pawn' and en_passant_target and click_coord == en_passant_target:
+                    captured_pos = (click_coord[0], click_coord[1] + 1)
+                    if captured_pos in white_locations:
+                        white_piece = white_locations.index(captured_pos)
+                        captured_piece_black.append(white_pieces[white_piece])
+                        white_pieces.pop(white_piece)
+                        white_locations.pop(white_piece)
 
                 elif click_coord in valid_moves and selection != 100:
                     piece = white_pieces[selection]
@@ -464,6 +491,13 @@ while run:
                         captured_piece_white.append(black_pieces[black_piece])
                         black_pieces.pop(black_piece)
                         black_locations.pop(black_piece)
+                    elif piece == 'pawn' and en_passant_target and click_coord == en_passant_target:
+                        captured_pos = (click_coord[0], click_coord[1] - 1)
+                        if captured_pos in black_locations:
+                            black_piece = black_locations.index(captured_pos)
+                            captured_piece_white.append(black_pieces[black_piece])
+                            black_pieces.pop(black_piece)
+                            black_locations.pop(black_piece)
 
                     black_options = check_options(black_pieces, black_locations, 'black')
                     white_options = check_options(white_pieces, white_locations, 'white')
