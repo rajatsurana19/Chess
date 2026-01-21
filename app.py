@@ -284,13 +284,11 @@ def check_king(position, color):
     if not moved['king']:
         if not moved['rook_right']:
             if all((x, row) not in friends+enemies for x in [5,6]):
-                if not is_in_check(color):
-                    moves_list.append((6, row))
+                moves_list.append((6, row))
 
         if not moved['rook_left']:
             if all((x, row) not in friends+enemies for x in [1,2,3]):
-                if not is_in_check(color):
-                    moves_list.append((2, row))
+                moves_list.append((2, row))
                     
     return moves_list
 
@@ -328,13 +326,13 @@ def draw_valid(moves):
 
 def check_valid_moves():
     if turn_step <= 1:
-        pieces = white_pieces
-        locations = white_locations
+        pieces = white_pieces[:]
+        locations = white_locations[:]
         color = 'white'
         options_list = white_options
     else:
-        pieces = black_pieces
-        locations = black_locations
+        pieces = black_pieces[:]
+        locations = black_locations[:]
         color = 'black'
         options_list = black_options
 
@@ -344,11 +342,40 @@ def check_valid_moves():
 
     for move in options_list[selection]:
         locations[selection] = move
+        
+        captured_piece = None
+        captured_index = None
+        
+        if color == 'white':
+            if move in black_locations:
+                captured_index = black_locations.index(move)
+                captured_piece = black_pieces[captured_index]
+                black_pieces.pop(captured_index)
+                black_locations.pop(captured_index)
+        else:
+            if move in white_locations:
+                captured_index = white_locations.index(move)
+                captured_piece = white_pieces[captured_index]
+                white_pieces.pop(captured_index)
+                white_locations.pop(captured_index)
 
         if not is_in_check(color):
             legal_moves.append(move)
 
+        if captured_piece:
+            if color == 'white':
+                black_pieces.insert(captured_index, captured_piece)
+                black_locations.insert(captured_index, move)
+            else:
+                white_pieces.insert(captured_index, captured_piece)
+                white_locations.insert(captured_index, move)
+
         locations[selection] = original_pos
+
+    if color == 'white':
+        white_locations[selection] = original_pos
+    else:
+        black_locations[selection] = original_pos
 
     return legal_moves
 
@@ -393,6 +420,18 @@ def is_in_check(color):
 
     for moves in enemy_moves:
         if king_pos in moves:
+            return True
+    return False
+
+
+def is_square_attacked(square, by_color):
+    if by_color == 'white':
+        enemy_moves = check_options(white_pieces, white_locations, 'white')
+    else:
+        enemy_moves = check_options(black_pieces, black_locations, 'black')
+
+    for moves in enemy_moves:
+        if square in moves:
             return True
     return False
 
@@ -450,11 +489,15 @@ while run:
                         white_moved['king'] = True
                         if abs(old_x - new_x) == 2:
                             if new_x == 6:
-                                rook_index = white_locations.index((7, 0))
-                                white_locations[rook_index] = (5, 0)
+                                for i, loc in enumerate(white_locations):
+                                    if loc == (7, 0) and white_pieces[i] == 'rook':
+                                        white_locations[i] = (5, 0)
+                                        break
                             elif new_x == 2:
-                                rook_index = white_locations.index((0, 0))
-                                white_locations[rook_index] = (3, 0)
+                                for i, loc in enumerate(white_locations):
+                                    if loc == (0, 0) and white_pieces[i] == 'rook':
+                                        white_locations[i] = (3, 0)
+                                        break
                     
                     if piece == 'rook':
                         if old_x == 0 and old_y == 0:
@@ -503,11 +546,15 @@ while run:
                         black_moved['king'] = True
                         if abs(old_x - new_x) == 2:
                             if new_x == 6:
-                                rook_index = black_locations.index((7, 7))
-                                black_locations[rook_index] = (5, 7)
+                                for i, loc in enumerate(black_locations):
+                                    if loc == (7, 7) and black_pieces[i] == 'rook':
+                                        black_locations[i] = (5, 7)
+                                        break
                             elif new_x == 2:
-                                rook_index = black_locations.index((0, 7))
-                                black_locations[rook_index] = (3, 7)
+                                for i, loc in enumerate(black_locations):
+                                    if loc == (0, 7) and black_pieces[i] == 'rook':
+                                        black_locations[i] = (3, 7)
+                                        break
                     
                     if piece == 'rook':
                         if old_x == 0 and old_y == 7:
