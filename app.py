@@ -367,11 +367,17 @@ def check_valid_moves():
         options_list = white_options
         pieces = white_pieces
         locations = white_locations
+        enemy_pieces = black_pieces
+        enemy_locations = black_locations
+        enemy_color = 'black'
     else:
         color = 'black'
         options_list = black_options
         pieces = black_pieces
         locations = black_locations
+        enemy_pieces = white_pieces
+        enemy_locations = white_locations
+        enemy_color = 'white'
 
     legal_moves = []
     piece = pieces[selection]
@@ -379,52 +385,37 @@ def check_valid_moves():
 
     for move in options_list[selection]:
         locations[selection] = move
-        
+
         captured_piece = None
         captured_index = None
-        
-        if color == 'white':
-            if move in black_locations:
-                captured_index = black_locations.index(move)
-                captured_piece = black_pieces[captured_index]
-                black_pieces.pop(captured_index)
-                black_locations.pop(captured_index)
-        else:
-            if move in white_locations:
-                captured_index = white_locations.index(move)
-                captured_piece = white_pieces[captured_index]
-                white_pieces.pop(captured_index)
-                white_locations.pop(captured_index)
+        captured_location = None
+
+        if move in enemy_locations:
+            captured_index = enemy_locations.index(move)
+            captured_piece = enemy_pieces.pop(captured_index)
+            captured_location = enemy_locations.pop(captured_index)
 
         in_check = is_in_check(color)
 
+        # restore captured piece
         if captured_piece:
-            if color == 'white':
-                black_pieces.insert(captured_index, captured_piece)
-                black_locations.insert(captured_index, move)
-            else:
-                white_pieces.insert(captured_index, captured_piece)
-                white_locations.insert(captured_index, move)
+            enemy_pieces.insert(captured_index, captured_piece)
+            enemy_locations.insert(captured_index, captured_location)
 
         locations[selection] = original_pos
 
         if not in_check:
+            # extra castling safety: king cannot pass through check
             if piece == 'king' and abs(move[0] - original_pos[0]) == 2:
-                if color == 'white':
-                    row = 0
-                else:
-                    row = 7
-                
-                if move[0] == 6:
-                    if not is_square_attacked((5, row), 'black' if color == 'white' else 'white'):
-                        legal_moves.append(move)
-                elif move[0] == 2:
-                    if not is_square_attacked((3, row), 'black' if color == 'white' else 'white'):
-                        legal_moves.append(move)
+                row = 0 if color == 'white' else 7
+                mid_square = (5, row) if move[0] == 6 else (3, row)
+                if not is_square_attacked(mid_square, enemy_color):
+                    legal_moves.append(move)
             else:
                 legal_moves.append(move)
 
     return legal_moves
+
 
 
 def draw_captured():
