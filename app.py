@@ -475,11 +475,15 @@ while run:
                                     if loc == (7, 0) and white_pieces[i] == 'rook':
                                         white_locations[i] = (5, 0)
                                         break
+                        
                             elif new_x == 2:
                                 for i, loc in enumerate(white_locations):
                                     if loc == (0, 0) and white_pieces[i] == 'rook':
                                         white_locations[i] = (3, 0)
                                         break
+                            white_moved['rook_right'] = True if new_x == 6 else white_moved['rook_right']
+                            white_moved['rook_left'] = True if new_x == 2 else white_moved['rook_left']
+
                     
                     if piece == 'rook':
                         if old_x == 0 and old_y == 0:
@@ -537,6 +541,9 @@ while run:
                                     if loc == (0, 7) and black_pieces[i] == 'rook':
                                         black_locations[i] = (3, 7)
                                         break
+                            black_moved['rook_right'] = True if new_x == 6 else black_moved['rook_right']
+                            black_moved['rook_left'] = True if new_x == 2 else black_moved['rook_left']
+
                     
                     if piece == 'rook':
                         if old_x == 0 and old_y == 7:
