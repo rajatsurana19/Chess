@@ -268,11 +268,13 @@ def check_king(position, color):
         enemies = black_locations
         moved = white_moved
         row = 0
+        enemy_color = 'black'
     else:
         friends = black_locations
         enemies = white_locations
         moved = black_moved
         row = 7
+        enemy_color = 'white'
 
     targets = [(1,0),(1,1),(1,-1),(-1,0),(-1,1),(-1,-1),(0,1),(0,-1)]
     for dx, dy in targets:
@@ -280,7 +282,7 @@ def check_king(position, color):
         if 0 <= target[0] <= 7 and 0 <= target[1] <= 7 and target not in friends:
             moves_list.append(target)
 
-    if not moved['king']:
+    if not moved['king'] and not is_in_check(color):
         if not moved['rook_right']:
             if all((x, row) not in friends + enemies for x in [5, 6]):
                 moves_list.append((6, row))
@@ -288,8 +290,9 @@ def check_king(position, color):
         if not moved['rook_left']:
             if all((x, row) not in friends + enemies for x in [1, 2, 3]):
                 moves_list.append((2, row))
-                    
+
     return moves_list
+
 
 
 def check_options(pieces, locations, turn):
